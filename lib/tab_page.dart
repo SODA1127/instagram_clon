@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclon/accout_page.dart';
 import 'package:instagramclon/home_page.dart';
 import 'package:instagramclon/search_page.dart';
 
 class TabPage extends StatefulWidget {
+  final FirebaseUser user;
+  TabPage(this.user);
+
   @override
   _TabPageState createState() => _TabPageState();
 }

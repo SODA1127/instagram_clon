@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:instagramclon/login_page.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -6,6 +9,8 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,9 +26,17 @@ class _AccountPageState extends State<AccountPage> {
           icon: Icon(
             Icons.exit_to_app,
           ),
-          onPressed: () {},
+          onPressed: () {
+            //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+            signOutWithGoogle();
+          },
         )
       ],
+      backgroundColor: Colors.white,
+      title: Text(
+        '𝔦𝔫𝔰𝔱𝔞𝔤𝔯𝔞𝔪 𝔠𝔩𝔬𝔫',
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
     );
   }
 
@@ -94,5 +107,17 @@ class _AccountPageState extends State<AccountPage> {
         ],
       ),
     );
+  }
+
+  Future<Null> signOutWithGoogle() async {
+    try {
+      // Sign out with firebase
+      await FirebaseAuth.instance.signOut();
+      // Sign out with google
+      await _googleSignIn.signOut();
+      //await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage(),));
+    } catch (e) {
+      print('failed : ${e.toString()}');
+    }
   }
 }
