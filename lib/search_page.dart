@@ -31,13 +31,13 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildBody() {
-    return StreamBuilder(
+    return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('post').snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        if (!snapshot.hasData && snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
-        var items = snapshot.data.documents ?? [];
+        var items = snapshot?.data?.documents ?? [];
 
         return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -57,7 +57,10 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildListItem(BuildContext context, document) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPostPage(document),));
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DetailPostPage(document),)
+        ).then((_) => setState(() {}));
       },
       child: Image.network(
           document['photoUrl'],

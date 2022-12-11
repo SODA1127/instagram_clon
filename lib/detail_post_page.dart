@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class DetailPostPage extends StatefulWidget {
   final dynamic document;
@@ -15,6 +17,16 @@ class _DetailPostPageState extends State<DetailPostPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('둘러보기'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.delete,
+            ),
+            onPressed: () {
+              deletePost(widget.document);
+            },
+          )
+        ],
       ),
       body: _buildBody(),
     );
@@ -30,8 +42,8 @@ class _DetailPostPageState extends State<DetailPostPage> {
             child: Row(
               children: <Widget>[
                 CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      widget.document['userPhotoUrl']),
+                  backgroundImage:
+                      NetworkImage(widget.document['userPhotoUrl']),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
@@ -60,5 +72,22 @@ class _DetailPostPageState extends State<DetailPostPage> {
         ],
       ),
     );
+  }
+
+  Future<Null> deletePost(document) async {
+    try {
+      final String id = document['id'];
+      Firestore.instance.collection("post").document(id).delete().then(
+        (doc) {
+          print("Document deleted : $id");
+          Fluttertoast.showToast(msg: "글이 삭제되었습니다.");
+          Navigator.pop(context);
+        },
+        onError: (e) => print("Error updating document $e"),
+      );
+      //await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage(),));
+    } catch (e) {
+      print('failed : ${e.toString()}');
+    }
   }
 }
